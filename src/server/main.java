@@ -1,3 +1,7 @@
+package server;
+
+import client.GUI;
+
 public class main {
     public static void main(String[] args) {
 
@@ -14,8 +18,7 @@ public class main {
                 new Color(128, 0, 255),//Purple
                 new Color(128, 128, 128)//Grey
         };
-
-
+        new GUI();
         System.out.println(gameBoard[2][3]);
     }
 }
