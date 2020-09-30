@@ -41,7 +41,6 @@ public class main {
         int[] parsedString = parser.parse("99:100:8:");
         grid.setCell(parsedString[0], parsedString[1], colors[parsedString[2]]);
         grid.repaint();
-
         grid.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
