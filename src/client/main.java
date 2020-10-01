@@ -4,17 +4,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.SocketException;
 
 public class main {
-    public static void main(String[] args) throws SocketException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         initGUI();
 
     }
 
-    private static void initGUI() throws InterruptedException {
-        Client client = new Client(50001);
-        client.run();
+    private static void initGUI() throws InterruptedException, IOException {
+        DatagramSocket socket = new DatagramSocket(4446);
+        Client client = new Client(4445, socket);
+
 
         JFrame frame = new JFrame();
         frame.setPreferredSize(new Dimension(1920, 1080));
@@ -53,7 +56,11 @@ public class main {
 
                 //String message = "color";
                 System.out.println("color"+":"+x/5+":"+y/5+":"+colorChooser.getSelecetedColorFromArray());
-                client.notifyServer("color"+":"+x/5+":"+y/5+":"+colorChooser.getSelecetedColorFromArray()+":");
+                try {
+                    client.notifyServer("color"+":"+x/5+":"+y/5+":"+colorChooser.getSelecetedColorFromArray()+":");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
 
                 //System.out.println(x);
                 //System.out.println(y);
@@ -61,6 +68,8 @@ public class main {
         });
         frame.pack();
         frame.setVisible(true);
+        SocketRecieve receiver = new SocketRecieve(socket, grid, colors);
+        receiver.start();
 
     }
 

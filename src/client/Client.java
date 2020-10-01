@@ -3,54 +3,24 @@ package client;
 import java.io.IOException;
 import java.net.*;
 
-public class Client implements Runnable{
+public class Client{
     private final int port;
+    DatagramSocket socket;
+    byte[] buffer = new byte[20]; //10 bytes, maximum length of x:y:color:
+    InetAddress address;
+    DatagramPacket packet;
 
-    public Client(int port) {
+    public Client(int port, DatagramSocket socket) throws UnknownHostException {
         this.port = port;
+        this.socket = socket;
+        packet = new DatagramPacket(buffer, buffer.length, address, port);
+        packet.setData(buffer);
+        address = Inet6Address.getByName("::1");
     }
 
-    @Override
-    public void run() {
-        try(DatagramSocket socket = new DatagramSocket(50000)) {
-            byte[] buffer = new byte[10];
-            String message = "hello";
-            DatagramPacket packet = new DatagramPacket(message.getBytes(), message.length(), Inet6Address.getLocalHost(), port);
+    public void notifyServer(String message) throws IOException {
+            packet = new DatagramPacket(buffer, buffer.length, address, port);
+            packet.setData(message.getBytes());
             socket.send(packet);
-        } catch (SocketException | UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    public void notifyGUI() {
-        try(DatagramSocket clientSocket = new DatagramSocket(48000)) {
-            byte[] buffer = new byte[5000];
-            while (true) {
-                DatagramPacket packet = new DatagramPacket(buffer, 0, buffer.length);
-                clientSocket.receive(packet);
-                String message = new String(packet.getData());
-                System.out.println(message);
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void notifyServer(String message) {
-        try(DatagramSocket socket = new DatagramSocket(50000)) {
-            //byte[] buffer = new byte[10];
-            DatagramPacket packet = new DatagramPacket(message.getBytes(), message.length(), Inet6Address.getLocalHost(), port);
-            socket.send(packet);
-        } catch (SocketException | UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

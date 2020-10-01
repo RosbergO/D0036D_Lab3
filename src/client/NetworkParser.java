@@ -8,14 +8,14 @@ public class NetworkParser {
         String[] temp = input.split(":");
         int[] parsedArray = new int[3];
         int[] args = new int[temp.length];
-        for (int i = 0; i < temp.length; i++)
+        for (int i = 0; i < temp.length - 1; i++)
         {
             System.out.println("Starting to parse " + temp[i].toString());
             args[i] = tryParse(temp[i], -1);
             if(args[i] == -1)
             {
                 System.out.println("Couldn't parse " + temp[i] + ", returning");
-                throw new RuntimeException("Couldnt parse");
+                return null;
             }
             parsedArray[i] = Integer.parseInt(temp[i]);
             System.out.println("successfully parsed " + args[i]);

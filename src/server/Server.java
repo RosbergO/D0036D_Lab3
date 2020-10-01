@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Server extends Thread {
+    int receivedPackets;
     int[][] gameBoard = new int[20][20]; //All values are default 0
     List<Client> clients = new ArrayList<Client>();
     boolean running = false;
@@ -29,6 +30,7 @@ public class Server extends Thread {
         socket = new DatagramSocket(port);
         gameBoard[15][3] = 2;
         gameBoard[4][16] = 4;
+        receivedPackets = 0;
     }
 
     public void runServer() throws IOException {
@@ -38,6 +40,9 @@ public class Server extends Thread {
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             socket.receive(packet);
             String received = new String(packet.getData(), 0, packet.getLength());
+            receivedPackets++;
+            if(receivedPackets % 10 == 0)
+                drawGameBoard();
             if(received.equals("join"))
                 OnClientJoin(packet);
             else if(received.equals("draw"))
@@ -152,8 +157,10 @@ public class Server extends Thread {
         /* Parses payload into gameboard modification */
         System.out.println("Received payload " + message);
         String[] temp = message.split(":");
+        if(temp.length < 4)
+            return;
         int[] args = new int[temp.length - 1];
-        for (int i = 1; i < temp.length - 1; i++)
+        for (int i = 1; i < 4; i++)
         {
             args[i - 1] = tryParse(temp[i], -1);
             if(args[i - 1] == -1)

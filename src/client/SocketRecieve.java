@@ -36,7 +36,10 @@ public class SocketRecieve extends Thread
             }
             System.out.println("ReceiveSocket did thing");
             String message = new String(packet.getData(), StandardCharsets.UTF_8);
+            System.out.println("Received message: " + message);
             parsedMessage = parser.parse(message);
+            if(parsedMessage == null)
+                continue;
             grid.setCell(parsedMessage[0], parsedMessage[1], color[parsedMessage[2]]);
             System.out.println(message);
             System.out.println(message.length());
