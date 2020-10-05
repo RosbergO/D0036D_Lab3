@@ -4,32 +4,32 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 public class ColorChooser extends JPanel {
     private JLabel label;
     private ButtonGroup buttonGroup = new ButtonGroup();
-    private Color selectedColor;
-    private Color[] colors;
+    private static int selectedColor;
+    utilities.Color[] colors = utilities.Color.getColorArray();
 
-    public ColorChooser(Color[] colors) {
+    public ColorChooser() {
         super(new BorderLayout());
-        this.colors = colors;
         setPreferredSize(new Dimension(800, 800));
-        label = new JLabel("ColoR", JLabel.CENTER);
+        label = new JLabel("", JLabel.CENTER);
         label.setOpaque(true);
-        int offsetX=0;//, offsetY = 0;
-        for(Color color : colors) {
-            System.out.println(color);
+        int offsetX=0;
+        for(int i = 0; i < colors.length; i++) {
+            System.out.println(i);
             JToggleButton btn = new JToggleButton();
-            btn.setBackground(color);
+            btn.setBackground(colors[i]);
             btn.setSize(50,50);
             offsetX+=50;
             btn.setLocation(offsetX,50);
             btn.addActionListener(new ActionListener(){
                 public void actionPerformed(ActionEvent e){
                     AbstractButton button = (AbstractButton) e.getSource();
-                    Color color = (Color) button.getBackground();
-                    selectedColor = color;
+                    java.awt.Color color = button.getBackground();
+                    selectedColor = Arrays.asList(colors).indexOf(color);
                 }
             });
             btn.setVisible(true);
@@ -39,16 +39,7 @@ public class ColorChooser extends JPanel {
         add(label, BorderLayout.CENTER);
     }
 
-    public Color getSelectedColor() {
+    public static int getSelectedColor() {
         return selectedColor;
-    }
-
-    public int getSelecetedColorFromArray() {
-        for(int i = 0; i < colors.length; i++) {
-            if(colors[i] == selectedColor) {
-                return i;
-            }
-        }
-        return -1;
     }
 }

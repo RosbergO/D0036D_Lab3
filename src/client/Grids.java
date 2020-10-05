@@ -6,16 +6,21 @@ public class Grids extends JPanel implements Runnable {
     private int width;
     private int height;
     private int rowsColumns;
-    private Color paintColor;
-    private Color[][] gameGrid;
+    private int paintColor;
+    private int[][] gameGrid;
 
-    public Grids(int width, int height, int rowsColumns, Color[] colors) {
-        gameGrid = new Color[rowsColumns][rowsColumns]; //x, y
+    public Grids(int width, int height, int rowsColumns) {
+        gameGrid = new int[rowsColumns][rowsColumns]; //x, y
         this.width = width;
         this.height = height;
         this.rowsColumns = rowsColumns;
         setSize(width, height);
         setVisible(true);
+        for(int i=0; i< gameGrid.length; i++) {
+            for (int j = 0; j < gameGrid.length; j++) {
+                gameGrid[i][j] = 0;
+            }
+        }
     }
 
     @Override
@@ -23,8 +28,8 @@ public class Grids extends JPanel implements Runnable {
         super.paintComponents(g);
         for(int i = 0; i < rowsColumns; i++) {
             for(int n = 0; n < rowsColumns; n++) {
-                Color color = gameGrid[i][n];
-                g.setColor(color);
+                int color = gameGrid[i][n];
+                g.setColor(utilities.Color.getColorAtIndex(color));
                 g.fillRect(i*5, n*5, 5, 5);
                 g.setColor(Color.BLACK);
             }
@@ -44,11 +49,17 @@ public class Grids extends JPanel implements Runnable {
         }
     }
 
+    public boolean withinGrid(int xPos, int yPos) {
+        if(xPos < rowsColumns && xPos >= 0 && yPos >= 0 && yPos < rowsColumns) {
+            return true;
+        }
+        return false;
+    }
 
     public void setCell(int x, int y) {
         int xPos = x/5;
         int yPos = y/5;
-        if(xPos < rowsColumns && yPos < rowsColumns) {
+        if(withinGrid(xPos, yPos)) {
             gameGrid[xPos][yPos] = paintColor;
         }
         else {
@@ -56,27 +67,27 @@ public class Grids extends JPanel implements Runnable {
         }
     }
 
-    public void setCell(int x, int y, Color color) {
+    public void setCell(int x, int y, int color) {
         int xPos = x;
         int yPos = y;
-        if(xPos < rowsColumns && yPos < rowsColumns) {
+        if(withinGrid(xPos, yPos)) {
             gameGrid[xPos][yPos] = color;
         }
         else {
             System.out.println("Not within grid");
         }
     }
-    public Color[][] getGameGrid() {
+    public int[][] getGameGrid() {
         return gameGrid;
     }
-    public void setGameGrid(Color[][] gameGrid) {
+    public void setGameGrid(int[][] gameGrid) {
         this.gameGrid = gameGrid;
     }
 
-    public Color getPaintColor() {
+    public int getPaintColor() {
         return paintColor;
     }
-    public void setPaintColor(Color paintColor) {
+    public void setPaintColor(int paintColor) {
         this.paintColor = paintColor;
     }
 
